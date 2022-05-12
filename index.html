@@ -1,0 +1,68 @@
+
+<!DOCTYPE html>
+<html lang="">
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+        <title>tudi</title>
+        <style>
+            body {
+                background-color: #181818;
+                padding: 0;
+                margin: 0;
+                overflow:hidden;
+            }
+
+            canvas {
+				padding: 0;
+				margin: auto;
+				display: block;
+				width: 100%;
+				height: 100%;
+				position: absolute;
+				top: 0;
+				bottom: 0;
+				left: 0;
+				right: 0;
+			}
+
+			#title {
+                font-family: "Helvetica", sans-serif, bold;
+                font-weight: bold;
+				position: absolute;
+				left: 10px;
+				top: 10px;
+				font-size: 29px;
+                margin: 0px;
+				color: #202020;
+				z-index: 1000;
+			    -webkit-touch-callout: none;
+			    -webkit-user-select: none;
+			    -khtml-user-select: none;
+			    -moz-user-select: none;
+			    -ms-user-select: none;
+			    user-select: none;
+			} 
+
+        </style>
+        <script src="assets/p5.js"></script>
+        <script>
+            function preventBehavior(e) {
+                e.preventDefault(); 
+            };
+
+            document.addEventListener("touchmove", preventBehavior, {passive: false});
+        </script>
+    </head>
+
+    <body>
+        <script src="sketch.js"></script>
+        <p id="title">
+            
+        <p>
+    </body>
+
+</html>
