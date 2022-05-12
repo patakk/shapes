@@ -14,7 +14,8 @@ function preload() {
 }
 
 function setup(){
-    canvas = createCanvas(windowWidth, windowHeight, WEBGL);
+    var mm = min(windowWidth, windowHeight)*.9;
+    canvas = createCanvas(mm, mm, WEBGL);
     pg = createGraphics(width, height, WEBGL);
     comp = createGraphics(width, height, WEBGL);
     click = createGraphics(width, height);
@@ -34,9 +35,9 @@ function generateShapes(){
     shapes = [];
     for(var k = 0; k < 25; k++){
         var shape = [];
-        var rx = random(-222, 222);
-        var ry = random(-222, 222);
-        var r = random(33, 66)*2;
+        var rx = random(-144, 144);
+        var ry = random(-144, 144);
+        var r = random(33, 66)*3;
         var oa = random(1000);
         var parts = round(random(3, 100));
         var chc = random(3);
@@ -137,9 +138,10 @@ function drawShapes(){
         pg.endShape();
 
         // FILL
+        pg.fill(82);
         pg.fill(colors[s%colors.length]);
         pg.noStroke();
-        pg.stroke(90);
+        //pg.stroke(90);
         pg.beginShape();
         for(var pt = 0; pt < distorted.length; pt++){
             var x = distorted[pt][0];
@@ -149,14 +151,14 @@ function drawShapes(){
         pg.endShape(CLOSE);
         
         // STROKE
-        pg.stroke(90);
-        pg.strokeWeight(1.4);
+        pg.strokeWeight(3.4);
+        pg.stroke(82);
         pg.noFill();
         pg.beginShape();
         for(var pt = 0; pt < shape.length; pt++){
             var x = shape[pt][0];
             var y = shape[pt][1];
-            //pg.vertex(x, y);
+            pg.vertex(x, y);
         }
         pg.endShape(CLOSE);
 
