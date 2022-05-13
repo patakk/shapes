@@ -7,6 +7,10 @@ let blurShader;
 
 var shouldReset = true;
 
+var colors;
+var bgc;
+var stc;
+
 function preload() {
     helvetica = loadFont('assets/HelveticaNeueBd.ttf');
     pressstart = loadFont('assets/PressStart2P-Regular.ttf');
@@ -14,7 +18,7 @@ function preload() {
 }
 
 function setup(){
-    var mm = min(windowWidth, windowHeight)*.9;
+    var mm = min(windowWidth, windowHeight)*.76;
     canvas = createCanvas(mm, mm, WEBGL);
     pg = createGraphics(width, height, WEBGL);
     comp = createGraphics(width, height, WEBGL);
@@ -35,19 +39,27 @@ function generateShapes(){
     shapes = [];
     for(var k = 0; k < 25; k++){
         var shape = [];
-        var rx = random(-144, 144);
-        var ry = random(-144, 144);
+        var rx = random(-180, 180);
+        var ry = random(-180, 180);
         var r = random(33, 66)*3;
         var oa = random(1000);
+        
+
         var parts = round(random(3, 100));
-        var chc = random(3);
+        var chc = random(5);
         if(chc < 1){
             parts = 3;
+            if(random(100) < 55){
+                oa = 210;
+            }
         }
-        else if(chc < 2){
+        else if(chc < 4){
             parts = 4;
+            if(random(100) < 55){
+                oa = 45;
+            }
         }
-        else if(chc < 3){
+        else if(chc < 5){
             parts = 100;
         }
         for(var a = 0; a < 360; a += 360/parts){
@@ -59,8 +71,7 @@ function generateShapes(){
     }
 }
 
-function resample(shape){
-    var detail = 10;
+function resample(shape, detail){
     var newshape = [];
     print("aa")
     for(var k = 0; k < shape.length; k++){
@@ -79,9 +90,8 @@ function resample(shape){
             var nn = round(d/detail);
             var ndt = d/nn;
             var cp = p1.copy();
-            dir.mult(ndt);
-            cp.add(dir);  
-            while(p5.Vector.dist(cp, p2) > ndt*1.2){ // .2 is actually 1.0, but this is safer
+            dir.mult(ndt); 
+            while(p5.Vector.dist(cp, p2) > ndt*1.64){ // .2 is actually 1.0, but this is safer
                 cp.add(dir); 
                 newshape.push([cp.x, cp.y]);
             }
@@ -108,22 +118,16 @@ function distort(shape){
     return distorted;
 }
 
+
 function drawShapes(){
 
-    var colors = [
-        color("#9d2b22"),
-        color("#594670"),
-        color("#f36864"),
-        color("#3d2953"),
-        color("#05413c")
-    ]
 
     for(var s = 0 ; s < shapes.length; s++){
         var shape = shapes[s];
         
         pg.push();
         pg.translate(0, 0, s);
-        var resampled = resample(shape);
+        var resampled = resample(shape, 10);
         var distorted = distort(resampled);
 
         // SHADOW
@@ -140,6 +144,7 @@ function drawShapes(){
         // FILL
         pg.fill(82);
         pg.fill(colors[s%colors.length]);
+        pg.fill(bgc);
         pg.noStroke();
         //pg.stroke(90);
         pg.beginShape();
@@ -151,8 +156,9 @@ function drawShapes(){
         pg.endShape(CLOSE);
         
         // STROKE
-        pg.strokeWeight(3.4);
-        pg.stroke(82);
+        pg.strokeWeight(2.4);
+        pg.stroke(colors[(s+1)%colors.length]);
+        pg.stroke(stc);
         pg.noFill();
         pg.beginShape();
         for(var pt = 0; pt < shape.length; pt++){
@@ -163,19 +169,24 @@ function drawShapes(){
         pg.endShape(CLOSE);
 
         // CUTS
-        //cutShape(distorted);
+        pg.stroke(stc);
+        cutShape(distorted);
         pg.pop();
     }
     pg.strokeWeight(1);
     pg.fill(90);
     pg.noStroke();
     for(var s = 0 ; s < shapes.length; s++){
+        pg.push();
+        pg.translate(0, 0, s+.01);
         var shape = shapes[s];
-        for(var pt = 0; pt < shape.length; pt++){
-            var x = shape[pt][0];
-            var y = shape[pt][1];
+        var resampled = resample(shape, round(power(random(0, 1), 1)*15+5));
+        for(var pt = 0; pt < resampled.length; pt++){
+            var x = resampled[pt][0];
+            var y = resampled[pt][1];
             //pg.ellipse(x, y, 5, 5);
         }
+        pg.pop();
     }
 }
 
@@ -236,15 +247,65 @@ function cutShape(shape){
     }
 }
 
+function resetColors(){
+    
+    var chc = random(4);
+
+    if(chc < 1){
+        colors = [
+            color("#234566"),
+            color("#2b5b7e"),
+            color("#28455c"),
+            color("#b33234"),
+            color("#d1b555"),
+            color("#dd3300"),
+            color("#412b69")
+        ]
+            bgc = colors[0];
+            bgc = color("#495f94");
+            bgc = color("#afaaaf");
+            bgc = color("#cccccc");
+    }
+    else if(chc < 2){
+        colors = [
+            color("#114134"),
+            color("#1f5a4a"),
+            color("#a4803f"),
+            color("#ff3322"),
+        ]
+        bgc = color("#d29234");
+    }
+    else if(chc < 3){
+        colors = [
+            color("#50a7d9"),
+            color("#963b64"),
+            color("#40638e"),
+            color("#bb8faf"),
+            color("#93b2d4"),
+        ]
+        bgc = color("#dddbd0");
+    }
+    else if(chc < 4){
+        colors = [
+            color("#cccccc"),
+            color("#222222"),
+            color("#00aa66"),
+        ]
+        bgc = color("#dd452c");
+    }
+    stc = color("#232323");
+}
+
 function reset(){
 
+    resetColors();
     pg.push();
 
     pg.clear();
 
     pg.colorMode(HSB, 100);
     pg.rectMode(CENTER);
-    pg.background(90);
+    pg.background(bgc);
     
     generateShapes();
     drawShapes();

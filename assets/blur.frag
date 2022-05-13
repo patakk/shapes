@@ -193,9 +193,9 @@ void main() {
 	vec4 b = vec4(br.r, bg.g, bb.b, 1.);
 
 	vec4 res = bbb*0.75+d*0.25;
-	res = res + (b-res)*pow(.32 + .1*frq4, 1.4) + n*.048;
+	res = res + (b-res)*pow(.32 + .1*frq4, 1.4) + n*.018;
 
-	res = bbb*0.75+d*0.25 + n*.048;
+	res = bbb*0.75 + d*0.15 + n*.018;
 
 
 	res.r = abs(res.r);
@@ -211,7 +211,8 @@ void main() {
 	//res.g *= 1. - (.04*frq5);
 	//res.b *= 1. - (.062*frq5);
 
-	res.rgb *= 0.9; //(0.8 + 0.2*frq6);
+	res.rgb *= 0.99; //(0.8 + 0.2*frq6);
+	res.a = 1.; //(0.8 + 0.2*frq6);
 	//res.rgb = 1. - res.rgb;
 
 	gl_FragColor = res;
